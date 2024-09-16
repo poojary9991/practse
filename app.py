@@ -6,13 +6,13 @@ from huggingface_hub import InferenceClient
 
 # Define models for local and remote inference
 local_model = "distilbert-base-uncased-finetuned-sst-2-english"
-remote_model = "distilbert-base-uncased-finetuned-sst-2-english"  # You can use the same model for both for now
+remote_model = "siebert/sentiment-roberta-large-english"  # You can use the same model for both for now
 
 # Load the local sentiment analysis pipeline with the specified model
 local_pipeline = pipeline("sentiment-analysis", model=local_model)
 
 # Initialize the inference pipeline for remote model (same model for simplicity here)
-remote_pipeline = InferenceClient(model=remote_model)
+remote_pipeline = InferenceClient(remote_model)
 
 # Function to perform sentiment analysis using the local pipeline
 def local_sentiment_analysis(review):
