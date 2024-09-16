@@ -1,14 +1,16 @@
-name: Sync to Hugging Face hub
+name: Sync to Hugging Face Hub
+
 on:
   push:
     branches: [main]
 
-  # to run this workflow manually from the Actions tab
+  # To run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,20 +26,24 @@ jobs:
           pip install pytest
 
       - name: Run tests
-        run: |
-          pytest
-      - uses: actions/checkout@v2
+        run: pytest
+
+      - name: Checkout for Hugging Face push
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
       - name: Add remote 
         env:
           CaseStudy1: ${{ secrets.CaseStudy1 }}
         run: git remote add space https://kroohaniwpi:$CaseStudy1@huggingface.co/spaces/ML-OPS-Grp11/CaseStudy1
+
       - name: Push to hub
         env:
           CaseStudy1: ${{ secrets.CaseStudy1 }}
         run: git push --force https://kroohaniwpi:$CaseStudy1@huggingface.co/spaces/ML-OPS-Grp11/CaseStudy1
-notify:
+
+  notify:
     runs-on: ubuntu-latest
 
     steps:
