@@ -12,7 +12,7 @@ remote_model = "distilbert-base-uncased-finetuned-sst-2-english"  # You can use 
 local_pipeline = pipeline("sentiment-analysis", model=local_model)
 
 # Initialize the inference pipeline for remote model (same model for simplicity here)
-remote_pipeline = InferenceClient("sentiment-analysis", model=remote_model)
+remote_pipeline = InferenceClient(model=remote_model)
 
 # Function to perform sentiment analysis using the local pipeline
 def local_sentiment_analysis(review):
