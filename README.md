@@ -18,3 +18,5 @@ A pipeline has been added to https://github.com/jvroo/CS553CaseStudy1.git
 
 This is for Group 11. 
 Authors: Keon Roohani, Shipra Poojary, Jagruti Chitte. 
+
+Attempt made to connect to discord notifications. 
