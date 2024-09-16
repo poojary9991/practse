@@ -32,6 +32,8 @@ The CI/CD of this project is implemented using `main.yml`. This file ensures tha
 
 ### Testing
 Pytest was used to test the local model and ensure correct functionality before deployment to the Huggingface environment.
+The testing uses Tox to test using Github actions on Windows and Ubuntu environments with Python 3.7, python 3.8,
+and python 3.9. 
 This covers part 2.b of the assignment. The tests can be found in the tests folder. 
 
 ### Part 3: Report Submission
