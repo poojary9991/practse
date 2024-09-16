@@ -2,7 +2,9 @@ import gradio as gr
 from transformers import pipeline
 import matplotlib.pyplot as plt
 import numpy as np
+import requests
 from huggingface_hub import InferenceClient
+import os
 
 # Define models for local and remote inference
 local_model = "distilbert-base-uncased-finetuned-sst-2-english"
@@ -11,8 +13,34 @@ remote_model = "siebert/sentiment-roberta-large-english"  # You can use the same
 # Load the local sentiment analysis pipeline with the specified model
 local_pipeline = pipeline("sentiment-analysis", model=local_model)
 
-# Initialize the inference pipeline for remote model (same model for simplicity here)
-remote_inference_client = InferenceClient(remote_model)
+# Initialize the inference client
+remote_inference_client = InferenceClient(remote_model) 
+
+# OMDb API key (replace with your own API key)
+OMDB_API_URL = 'http://www.omdbapi.com/'
+# This is secret on Huggingface
+api_key = os.getenv("OMDB")
+OMDB_API_KEY = OpenAI(api_key=api_key)
+
+# Function to fetch movie information from OMDb API
+def fetch_movie_info(movie_name):
+    try:
+        response = requests.get(OMDB_API_URL, params={'t': movie_name, 'apikey': OMDB_API_KEY})
+        data = response.json()
+        if data['Response'] == 'True':
+            return {
+                'Title': data.get('Title', 'N/A'),
+                'Description': data.get('Plot', 'N/A'),
+                'Year': data.get('Year', 'N/A'),
+                'Director': data.get('Director', 'N/A'),
+                'Genre': data.get('Genre', 'N/A'),
+                'Actors': data.get('Actors', 'N/A'),
+                'Rating': data.get('imdbRating', 'N/A'),
+            }
+        else:
+            return {'Error': data.get('Error', 'Movie not found')}
+    except Exception as e:
+        return {'Error': str(e)}
 
 # Function to perform sentiment analysis using the local pipeline
 def local_sentiment_analysis(review):
@@ -28,17 +56,17 @@ def local_sentiment_analysis(review):
 def remote_sentiment_analysis(review):
     try:
         # Make a request to the Hugging Face Inference API for text classification
-        response = remote_inference_client.text_classification(review, model=remote_model)
+        response = remote_inference_client.text_classification(review)
         sentiment = response[0]['label']
         score = response[0]['score']
         return sentiment, score
     except Exception as e:
-        return f"Error: {str(e)}", 0.0  # Ensure it returns two values
+        return f"Error: {str(e)}", 0.0
 
-# Function to analyze sentiment and return the result as a string and plot
-def analyze_sentiment(review, mode):
+# Function to analyze sentiment and fetch movie details
+def analyze_sentiment(movie_name, review, mode):
     if not review.strip():
-        return "Error: Review text cannot be empty.", None
+        return "Error: Review text cannot be empty.", None, None, None
 
     if mode == "Local Pipeline":
         sentiment, score = local_sentiment_analysis(review)
@@ -47,11 +75,17 @@ def analyze_sentiment(review, mode):
         sentiment, score = remote_sentiment_analysis(review)
         model_info = f"Using remote model: {remote_model}"
     else:
-        return "Invalid mode selected.", None
+        return "Invalid mode selected.", None, None, None
+
+    # Fetch movie information
+    movie_info = fetch_movie_info(movie_name)
 
     # Format the sentiment result
     result_text = f"Sentiment: {sentiment}, Confidence: {score:.2f}\n{model_info}"
-
+    
+    # Extract movie description
+    movie_description = movie_info.get('Description', 'N/A')
+    
     # Enhanced plot
     fig, ax = plt.subplots(figsize=(8, 5))
     
@@ -73,7 +107,7 @@ def analyze_sentiment(review, mode):
                     textcoords="offset points",
                     ha='center', va='bottom')
 
-    return result_text, fig  # Return the Matplotlib figure directly
+    return result_text, movie_description, movie_info, fig  # Return the Matplotlib figure directly
 
 # Custom CSS for styling
 custom_css = """
@@ -141,6 +175,11 @@ with gr.Blocks(css=custom_css) as demo:
 
     with gr.Column():
         with gr.Row():
+            movie_input = gr.Textbox(
+                label="Enter Movie Name", placeholder="Type the movie name here...", lines=1
+            )
+        
+        with gr.Row():
             review_input = gr.Textbox(
                 label="Enter Movie Review", placeholder="Type your movie review here...", lines=4
             )
@@ -153,13 +192,14 @@ with gr.Blocks(css=custom_css) as demo:
         with gr.Row():
             analyze_button = gr.Button("Analyze Sentiment")
 
-        # Output box to display the sentiment analysis result
+        # Output boxes
         sentiment_output = gr.Textbox(label="Sentiment Analysis Result", interactive=False)
-        # Plot output to display the sentiment score graph
+        movie_description_output = gr.Textbox(label="Movie Description", interactive=False)
+        movie_info_output = gr.JSON(label="Movie Information")
         plot_output = gr.Plot(label="Sentiment Score Graph")
 
-    analyze_button.click(analyze_sentiment, [review_input, mode_input], [sentiment_output, plot_output])
+    analyze_button.click(analyze_sentiment, [movie_input, review_input, mode_input], [sentiment_output, movie_description_output, movie_info_output, plot_output])
 
 # Run the Gradio app
 if __name__ == "__main__":
-    demo.launch('share=True')
+    demo.launch(share=True)
