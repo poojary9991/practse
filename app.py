@@ -28,7 +28,7 @@ def local_sentiment_analysis(review):
 def remote_sentiment_analysis(review):
     try:
         # Make a request to the Hugging Face Inference API for text classification
-        response = inference_client.text_classification(inputs=review)
+        response = inference_client.text_classification(review)
         sentiment = response[0]['label']
         score = response[0]['score']
         return f"Sentiment: {sentiment}, Confidence: {score:.2f}"
