@@ -153,6 +153,15 @@ body {
     color: #ffffff;
 }
 
+.gr-markdown {
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    color: #333;
+}
+
 .gr-button {
     background-color: #4CAF50;
     color: white;
