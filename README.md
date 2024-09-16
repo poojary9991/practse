@@ -30,6 +30,10 @@ The use of a local model was done using `"distilbert-base-uncased-finetuned-sst-
 ### CI/CD Implementation
 The CI/CD of this project is implemented using `main.yml`. This file ensures that pytest is run for the local model before any pushes are made to Hugging Face. After a successful test, the main commit is pushed to Hugging Face automatically. This covers sections 1.b and 2.b of the assignment.
 
+### Testing
+Pytest was used to test the local model and ensure correct functionality before deployment to the Huggingface environment.
+This covers part 2.b of the assignment. The tests can be found in the tests folder. 
+
 ### Part 3: Report Submission
 The report for part 3 of the Case Study is submitted on Canvas.
 
