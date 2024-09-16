@@ -1,6 +1,6 @@
-gradio==4.39.*
-torch==2.4.*
-transformers==4.43.*
-accelerate==0.33.*
+gradio
+torch
+transformers
+accelerate
 huggingface_hub
 pytest
