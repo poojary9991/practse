@@ -20,7 +20,7 @@ remote_inference_client = InferenceClient(remote_model)
 OMDB_API_URL = 'http://www.omdbapi.com/'
 # This is secret on Huggingface
 api_key = os.getenv("OMDB")
-OMDB_API_KEY = OpenAI(api_key=api_key)
+OMDB_API_KEY = api_key
 
 # Function to fetch movie information from OMDb API
 def fetch_movie_info(movie_name):
