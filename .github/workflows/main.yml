@@ -37,3 +37,14 @@ jobs:
         env:
           CaseStudy1: ${{ secrets.CaseStudy1 }}
         run: git push --force https://kroohaniwpi:$CaseStudy1@huggingface.co/spaces/ML-OPS-Grp11/CaseStudy1
+notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"content\": \"A new commit was pushed to the main branch by $GITHUB_ACTOR. 😄 CS553_CaseStudy_Group 11 rock!\"}" \
+          $DISCORD_WEBHOOK_URL

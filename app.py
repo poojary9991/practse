@@ -107,20 +107,20 @@ def analyze_sentiment(movie_name, review, mode):
     # Return the Matplotlib figure directly to plot_output
     return result_text, movie_description, fig
 
-# Function to format movie information into a prettier display
+# Function to format movie information into a plain text format
 def format_movie_description(movie_info):
     if 'Error' in movie_info:
-        return f"**Error:** {movie_info['Error']}"
+        return f"Error: {movie_info['Error']}"
     
-    return f"""
-    **🎬 Title:** {movie_info['Title']}  
-    **📅 Year:** {movie_info['Year']}  
-    **👨‍🎤 Actors:** {movie_info['Actors']}  
-    **🎥 Director:** {movie_info['Director']}  
-    **🏆 Rating:** {movie_info['Rating']}  
-    **📖 Genre:** {movie_info['Genre']}  
-    **📝 Description:** {movie_info['Description']}  
-    """
+    return (
+        f"Title: {movie_info['Title']}\n"
+        f"Year: {movie_info['Year']}\n"
+        f"Actors: {movie_info['Actors']}\n"
+        f"Director: {movie_info['Director']}\n"
+        f"Rating: {movie_info['Rating']}\n"
+        f"Genre: {movie_info['Genre']}\n"
+        f"Description: {movie_info['Description']}"
+    )
 
 # Enhanced CSS for a modern, clean look
 custom_css = """
@@ -151,15 +151,6 @@ body {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #3b3e56;
     color: #ffffff;
-}
-
-.gr-markdown {
-    margin-bottom: 20px;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background-color: #ffffff;
-    color: #333;
 }
 
 .gr-button {
@@ -206,7 +197,7 @@ with gr.Blocks(css=custom_css) as demo:
 
         with gr.Column(scale=2):
             sentiment_output = gr.Textbox(label="🗨️ Sentiment Analysis Result", interactive=False)
-            movie_description_output = gr.Markdown(label="📃 Movie Description")
+            movie_description_output = gr.Textbox(label="📃 Movie Description", interactive=False, lines=10)
             plot_output = gr.Plot(label="📊 Sentiment Score Graph")
 
     analyze_button.click(
