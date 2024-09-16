@@ -27,12 +27,13 @@ def local_sentiment_analysis(review):
 # Function to perform sentiment analysis using the remote pipeline
 def remote_sentiment_analysis(review):
     try:
-        result = remote_pipeline(review)
-        sentiment = result[0]['label']
-        score = result[0]['score']
-        return sentiment, score
+        # Make a request to the Hugging Face Inference API for text classification
+        response = inference_client.text_classification(inputs=review)
+        sentiment = response[0]['label']
+        score = response[0]['score']
+        return f"Sentiment: {sentiment}, Confidence: {score:.2f}"
     except Exception as e:
-        return f"Error: {str(e)}", 0.0
+        return f"Error: {str(e)}"
 
 # Function to analyze sentiment and return the result as a string and plot
 def analyze_sentiment(review, mode):
