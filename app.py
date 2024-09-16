@@ -1,26 +1,23 @@
 import gradio as gr
 from transformers import pipeline
 import matplotlib.pyplot as plt
-import numpy as np
 import requests
 from huggingface_hub import InferenceClient
 import os
 
 # Define models for local and remote inference
 local_model = "distilbert-base-uncased-finetuned-sst-2-english"
-remote_model = "siebert/sentiment-roberta-large-english"  # You can use the same model for both for now
+remote_model = "siebert/sentiment-roberta-large-english"
 
 # Load the local sentiment analysis pipeline with the specified model
 local_pipeline = pipeline("sentiment-analysis", model=local_model)
 
 # Initialize the inference client
-remote_inference_client = InferenceClient(remote_model) 
+remote_inference_client = InferenceClient(remote_model)
 
 # OMDb API key (replace with your own API key)
 OMDB_API_URL = 'http://www.omdbapi.com/'
-# This is secret on Huggingface
-api_key = os.getenv("OMDB")
-OMDB_API_KEY = api_key
+OMDB_API_KEY = os.getenv("OMDB")  # Fetching API key from environment variables
 
 # Function to fetch movie information from OMDb API
 def fetch_movie_info(movie_name):
@@ -82,13 +79,13 @@ def analyze_sentiment(movie_name, review, mode):
 
     # Format the sentiment result
     result_text = f"Sentiment: {sentiment}, Confidence: {score:.2f}\n{model_info}"
-    
+
     # Extract movie description
     movie_description = movie_info.get('Description', 'N/A')
-    
+
     # Enhanced plot
     fig, ax = plt.subplots(figsize=(8, 5))
-    
+
     categories = ['POSITIVE', 'NEGATIVE']
     sentiment_scores = [score if sentiment == 'POSITIVE' else (1 - score), score if sentiment == 'NEGATIVE' else (1 - score)]
     colors = ['#4CAF50', '#F44336']
@@ -109,96 +106,90 @@ def analyze_sentiment(movie_name, review, mode):
 
     return result_text, movie_description, movie_info, fig  # Return the Matplotlib figure directly
 
-# Custom CSS for styling
+# Enhanced CSS for a modern, clean look
 custom_css = """
 body {
-    background-color: #2c2f33;
-    color: #f0f0f0;
+    background-color: #1e1e2f;
+    color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.gradio-container {
+    border-radius: 10px;
+    background-color: #2c2f48;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .gr-textbox, .gr-radio {
     margin-bottom: 20px;
-    border: 1px solid #444;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #3a3d41;
+    border: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #3b3e56;
+    color: #ffffff;
 }
 
 .gr-button {
-    background-color: #7289da;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s;
     border-radius: 8px;
     margin-top: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .gr-button:hover {
-    background-color: #5b6eae;
-}
-
-#component-2 {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-#component-3 {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-#component-4 {
-    font-size: 16px;
-    padding: 15px;
-    background-color: #3a3d41;
-    border: 1px solid #444;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #388e3c;
 }
 
 h1 {
     text-align: center;
-    font-size: 32px;
-    margin-bottom: 40px;
-    color: #7289da;
+    font-size: 34px;
+    margin-bottom: 20px;
+    color: #00bcd4;
 }
 """
 
 # Gradio interface
 with gr.Blocks(css=custom_css) as demo:
-    gr.Markdown("<h1>Movie Review Sentiment Analysis</h1>")
+    gr.Markdown("<h1>🎬 Movie Review Sentiment Analysis</h1>")
 
-    with gr.Column():
-        with gr.Row():
+    with gr.Row(equal_height=True):
+        with gr.Column(scale=1):
             movie_input = gr.Textbox(
-                label="Enter Movie Name", placeholder="Type the movie name here...", lines=1
+                label="🎥 Movie Name", placeholder="Enter the movie name...", lines=1
             )
-        
-        with gr.Row():
             review_input = gr.Textbox(
-                label="Enter Movie Review", placeholder="Type your movie review here...", lines=4
+                label="📝 Movie Review", placeholder="Enter your movie review...", lines=4
             )
-
-        with gr.Row():
             mode_input = gr.Radio(
-                ["Local Pipeline", "Inference API"], label="Select Processing Mode", value="Inference API"
+                ["Local Pipeline", "Inference API"], label="🔍 Processing Mode", value="Inference API"
             )
+            analyze_button = gr.Button("🔍 Analyze Sentiment")
 
-        with gr.Row():
-            analyze_button = gr.Button("Analyze Sentiment")
+        with gr.Column(scale=2):
+            sentiment_output = gr.Textbox(label="🗨️ Sentiment Analysis Result", interactive=False)
+            movie_description_output = gr.Textbox(label="📃 Movie Description", interactive=False)
+            movie_info_output = gr.JSON(label="ℹ️ Movie Information")
+            plot_output = gr.Plot(label="📊 Sentiment Score Graph")
 
-        # Output boxes
-        sentiment_output = gr.Textbox(label="Sentiment Analysis Result", interactive=False)
-        movie_description_output = gr.Textbox(label="Movie Description", interactive=False)
-        movie_info_output = gr.JSON(label="Movie Information")
-        plot_output = gr.Plot(label="Sentiment Score Graph")
-
-    analyze_button.click(analyze_sentiment, [movie_input, review_input, mode_input], [sentiment_output, movie_description_output, movie_info_output, plot_output])
+    analyze_button.click(
+        analyze_sentiment, 
+        [movie_input, review_input, mode_input], 
+        [sentiment_output, movie_description_output, movie_info_output, plot_output]
+    )
 
 # Run the Gradio app
 if __name__ == "__main__":
