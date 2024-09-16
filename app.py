@@ -28,7 +28,7 @@ def local_sentiment_analysis(review):
 def remote_sentiment_analysis(review):
     try:
         # Make a request to the Hugging Face Inference API for text classification
-        response = inference_client.text_classification(review)
+        response = remote_inference_client.text_classification(review)
         sentiment = response[0]['label']
         score = response[0]['score']
         return f"Sentiment: {sentiment}, Confidence: {score:.2f}"
@@ -45,7 +45,7 @@ def analyze_sentiment(review, mode):
         model_info = f"Using local model: {local_model}"
     elif mode == "Inference API":
         sentiment, score = remote_sentiment_analysis(review)
-        model_info = f"Using remote model: {remote_inference_client}"
+        model_info = f"Using remote model: {remote_model}"
     else:
         return "Invalid mode selected.", None
 
