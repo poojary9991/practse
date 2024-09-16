@@ -57,7 +57,7 @@ def analyze_sentiment(review, mode):
     
     categories = ['POSITIVE', 'NEGATIVE']
     sentiment_scores = [score if sentiment == 'POSITIVE' else (1 - score), score if sentiment == 'NEGATIVE' else (1 - score)]
-    colors = ['#4CAF50' if sentiment == 'POSITIVE' else '#F44336', '#F44336']
+    colors = ['#4CAF50', '#F44336']
 
     bars = ax.bar(categories, sentiment_scores, color=colors)
     ax.set_ylim(0, 1)
