@@ -12,7 +12,7 @@ remote_model = "siebert/sentiment-roberta-large-english"  # You can use the same
 local_pipeline = pipeline("sentiment-analysis", model=local_model)
 
 # Initialize the inference pipeline for remote model (same model for simplicity here)
-remote_pipeline = InferenceClient(remote_model)
+remote_inference_client = InferenceClient(remote_model)
 
 # Function to perform sentiment analysis using the local pipeline
 def local_sentiment_analysis(review):
@@ -45,7 +45,7 @@ def analyze_sentiment(review, mode):
         model_info = f"Using local model: {local_model}"
     elif mode == "Inference API":
         sentiment, score = remote_sentiment_analysis(review)
-        model_info = f"Using remote model: {remote_model}"
+        model_info = f"Using remote model: {remote_inference_client}"
     else:
         return "Invalid mode selected.", None
 
