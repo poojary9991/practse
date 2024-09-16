@@ -81,8 +81,8 @@ def analyze_sentiment(movie_name, review, mode):
     result_text = f"Sentiment: {sentiment}, Confidence: {score:.2f}\n{model_info}"
 
     # Extract movie description
-    movie_description = movie_info.get('Description', 'N/A')
-
+    movie_description = format_movie_description(movie_info)
+    
     # Enhanced plot
     fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -104,7 +104,23 @@ def analyze_sentiment(movie_name, review, mode):
                     textcoords="offset points",
                     ha='center', va='bottom')
 
-    return result_text, movie_description, movie_info, fig  # Return the Matplotlib figure directly
+    # Return the Matplotlib figure directly to plot_output
+    return result_text, movie_description, fig
+
+# Function to format movie information into a prettier display
+def format_movie_description(movie_info):
+    if 'Error' in movie_info:
+        return f"**Error:** {movie_info['Error']}"
+    
+    return f"""
+    **🎬 Title:** {movie_info['Title']}  
+    **📅 Year:** {movie_info['Year']}  
+    **👨‍🎤 Actors:** {movie_info['Actors']}  
+    **🎥 Director:** {movie_info['Director']}  
+    **🏆 Rating:** {movie_info['Rating']}  
+    **📖 Genre:** {movie_info['Genre']}  
+    **📝 Description:** {movie_info['Description']}  
+    """
 
 # Enhanced CSS for a modern, clean look
 custom_css = """
@@ -181,14 +197,13 @@ with gr.Blocks(css=custom_css) as demo:
 
         with gr.Column(scale=2):
             sentiment_output = gr.Textbox(label="🗨️ Sentiment Analysis Result", interactive=False)
-            movie_description_output = gr.Textbox(label="📃 Movie Description", interactive=False)
-            movie_info_output = gr.JSON(label="ℹ️ Movie Information")
+            movie_description_output = gr.Markdown(label="📃 Movie Description")
             plot_output = gr.Plot(label="📊 Sentiment Score Graph")
 
     analyze_button.click(
         analyze_sentiment, 
         [movie_input, review_input, mode_input], 
-        [sentiment_output, movie_description_output, movie_info_output, plot_output]
+        [sentiment_output, movie_description_output, plot_output]
     )
 
 # Run the Gradio app
