@@ -2,6 +2,7 @@ import gradio as gr
 from transformers import pipeline
 import matplotlib.pyplot as plt
 import numpy as np
+from huggingface_hub import InferenceClient
 
 # Define models for local and remote inference
 local_model = "distilbert-base-uncased-finetuned-sst-2-english"
