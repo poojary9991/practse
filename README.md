@@ -43,11 +43,9 @@ The report for part 3 of the Case Study is submitted on Canvas.
 The video for part 4 of the Case Study is submitted on Canvas.
 
 ### Part 5: Discord Notifications
-A decision was made to connect to Discord notifications. This was done by creating a Discord server and a channel within it. A webhook was created and linked from the channel to the GitHub repository via the secrets in settings. A GitHub Action uses this secret to push a notification every time a commit to the main branch is made. This GitHub action can be found in `main.yml` for your reference. This covers section 5 of the assignment. We have refered Prof. Paffenroth's discord notification yml file.
+A decision was made to connect to Discord notifications. This was done by creating a Discord server and a channel within it. A webhook was created and linked from the channel to the GitHub repository via the secrets in settings. A GitHub Action uses this secret to push a notification every time a commit to the main branch is made. This GitHub action can be found in `main.yml` for your reference. This covers section 5 of the assignment. We have referred Prof. Paffenroth's discord_notification yml file.
 
-  
-
-**Note**: The GitHub action workflow was used from [nogibjj's GitHub repository](https://github.com/nogibjj/hugging-face) as a reference. His corresponding YouTube video was particularly helpful, which can be found [here](https://www.youtube.com/watch?v=VYSGjUa5sc4&feature=youtu.be).
+**Note**: The GitHub action workflow was used from [nogibjj's GitHub repository](https://github.com/nogibjj/hugging-face) as a reference. His corresponding YouTube video was particularly helpful, which can be found [here](https://www.youtube.com/watch?v=VYSGjUa5sc4&feature=youtu.be).For retrieving the movie names and descriptions, we used an API key from the OMDb platform,[here](https://www.omdbapi.com/)
 
 
 ## References
