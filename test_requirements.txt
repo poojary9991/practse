@@ -1,9 +1,7 @@
-
--f https://download.pytorch.org/whl/torch_stable.html 
-gradio==4.43.*
-torch==2.3.0+cpu
-transformers==4.43.*
-accelerate==0.33.*
-huggingface_hub==0.23.*
-pydantic==2.6.*
+gradio
+torch
+transformers
+accelerate
+huggingface_hub
+pydantic
 pytest
