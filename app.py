@@ -208,4 +208,4 @@ with gr.Blocks(css=custom_css) as demo:
 
 # Run the Gradio app
 if __name__ == "__main__":
-    demo.launch(share=True, server_port=8011)
+    demo.launch(share=True)
