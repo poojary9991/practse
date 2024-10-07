@@ -7,3 +7,5 @@ transformers==4.43.*
 accelerate==0.33.*
 pytest
 tox
+fastapi==0.111.0 
+pydantic==2.*
