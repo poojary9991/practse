@@ -17,4 +17,4 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.TEST }}
-        run: git push https://poojary9991:$TEST@huggingface.co/spaces/poojary9991/CS553_ML_OPS_Group_11 main
+        run: git push https://poojary9991:$TEST@huggingface.co/spaces/poojary9991/CaseStudy1 main
